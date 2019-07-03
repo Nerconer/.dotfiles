@@ -6,5 +6,6 @@
   df = diff
   t = tag
   ci = commit
+  cim = commit -m
   cia = commit --ammend
   ciar = commit --amend --reuse-message=HEAD
