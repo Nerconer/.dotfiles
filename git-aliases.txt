@@ -1,0 +1,10 @@
+[alias]
+  st = status
+  unstage = reset HEAD --
+  b = branch
+  l = log
+  df = diff
+  t = tag
+  ci = commit
+  cia = commit --ammend
+  ciar = commit --amend --reuse-message=HEAD
