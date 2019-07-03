@@ -1,5 +1,5 @@
 # dotfiles
 Dotfiles, configurations, and general workspace setup
 
-## .gitconfig
+## git-aliases
 These are the personal git aliases I use (by placing them in `git config --global -e`). Feel free to steal or ignore them.
