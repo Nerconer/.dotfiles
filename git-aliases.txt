@@ -3,7 +3,7 @@
   unstage = reset HEAD --
   b = branch
   l = log
-  lo = log --online
+  lo = log --oneline
   df = diff
   t = tag
   ci = commit
