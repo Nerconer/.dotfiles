@@ -1,5 +1,6 @@
 [alias]
   st = status
+  sts = status -s
   unstage = reset HEAD --
   b = branch
   l = log
@@ -11,3 +12,4 @@
   cia = commit --ammend
   ciar = commit --amend --reuse-message=HEAD
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  co = checkout
