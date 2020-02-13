@@ -3,6 +3,7 @@
   sts = status -s
   unstage = reset HEAD --
   b = branch
+  bd = branch -D
   l = log
   lo = log --oneline
   df = diff
