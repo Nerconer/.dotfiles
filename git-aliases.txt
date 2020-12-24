@@ -1,6 +1,7 @@
 [alias]
   st = status
   sts = status -s
+  fuckit = reset --hard
   unstage = reset HEAD --
   b = branch
   bd = branch -D
