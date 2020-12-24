@@ -1,12 +1,12 @@
 # dotfiles
-Dotfiles, configurations, and general workspace setup
+Dotfiles, configurations, and general workspace setup. Because every dev should have one.
 
 ## git-aliases
 Configure Notepad++ as the default text editor:
 ```bash
 git config --global core.editor "'C:\Program Files (x86)\Notepad++\notepad++.exe'"
 ```
-Visual Studio code:
+Configure Visual Studio Code as the default text editor:
 ```bash
 git config --global core.editor "code --wait"
 ```
