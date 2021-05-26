@@ -25,6 +25,10 @@ brew install gnu-sed --with-default-names
 # Install a modern version of Bash.
 brew install bash
 brew install bash-completion2
+# Install Postman
+brew install --cask postman
+# Install Visual Studio Code editor
+brew install --cask visual-studio-code
 
 # Switch to using brew-installed bash as default shell
 if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
@@ -96,9 +100,6 @@ brew install ssh-copy-id
 brew install tree
 brew install vbindiff
 brew install zopfli
-
-# Editors
-brew install --cask visual-studio-code
 
 # Remove outdated versions from the cellar.
 brew cleanup
