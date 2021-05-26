@@ -1,4 +1,5 @@
 [alias]
+
   st = status
   sts = status -s
   fuckit = reset --hard
@@ -16,3 +17,35 @@
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   co = checkout
   when = for-each-ref --sort=committerdate --format='%(refname:short) * %(authorname) * %(committerdate:relative)' refs/remotes/
+  
+  # Show verbose output about tags, branches or remotes
+	tags = tag -l
+	branches = branch --all
+  remotes = remote --verbose
+  
+  # Amend the currently staged files to the latest commit.
+	amend = commit --amend --reuse-message=HEAD
+
+[branch]
+
+	# Show most recently changed branches first.
+	sort = -committerdate
+
+[color "branch"]
+
+	current = yellow reverse
+	local = yellow
+	remote = green
+  
+[color "diff"]
+
+	meta = yellow bold
+	frag = magenta bold # line info
+	old = red # deletions
+	new = green # additions
+
+[color "status"]
+
+	added = yellow
+	changed = green
+	untracked = cyan
