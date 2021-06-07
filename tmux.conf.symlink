@@ -21,6 +21,9 @@ bind - split-window -v
 unbind '"'
 unbind %
 
+set -q -g status-utf8 on # Expect utf-8 (tmux < 2.2)
+set -g utf8 on
+
 # Boost history
 set -g history-limit 5000
 
@@ -29,3 +32,13 @@ set -g base-index 1
 
 # Make pane numbering consistent with windows
 setw -g pane-base-index 1
+
+# Rename window to reflect current program
+set -g automatic-rename on
+# Rename windows when a window is closed
+set -g renumber-windows on
+
+# Set terminal title
+set -g set-titles on
+set -g set-titles-string '#h #S #I #W'
+

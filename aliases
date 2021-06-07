@@ -1,0 +1,19 @@
+# Dir navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# Utilities
+alias h="history"
+alias ip="curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g'"
+alias g="git"
+alias n="nano"
+alias top="htop"
+
+# use nvim, but don't make me think about it
+[[ -n "$(command -v nvim)" ]] && alias vim="nvim"
+
+# Helpers
+alias grep='grep --color=auto'
+alias df='df -h' # disk free, in Gigabytes, not bytes
+alias du='du -h -c' # calculate disk usage for a folder

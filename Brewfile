@@ -20,4 +20,6 @@ brew "z"
 brew "zsh"
 brew "nmap"
 cask "visual-studio-code"
+brew "dos2unix"
+brew "nvim"
 
