@@ -1,0 +1,56 @@
+" Make Vim more useful
+set nocompatible
+" Use Linux/OS clipboard by default
+set clipboard=unnamed
+" Allow cursor keys in insert mode
+set esckeys
+" Optimize for fast terminal connections
+set ttyfast
+" New lines inherit the identation of previous lines
+set autoindent
+" Make tabs as wide as four spaces
+set tabstop=4 softtabstop=4
+" Enable per-directory .vimrc files
+set exrc
+" Show the filename in the window title bar
+set title
+" Use relative line numbers
+set relativenumber
+" Enable line numbers
+set number
+" Enable syntax highlighting
+syntax on
+" Highlight current line
+set cursorline
+" Keeps any edited buffer in the background
+set hidden
+" Disable error bells
+set noerrorbells
+" Do not wrap lines
+set nowrap
+" Highlight dynamically as pattern is typed
+set incsearch
+" Show 120 columns but make it obvious where 80 characters is
+let &colorcolumn="81,".join(range(129,999),",")
+" Start scrolling 8 lines before the horizontal window border
+set scrolloff=8
+" Add extra column
+set signcolumn=yes
+" Show current mode
+set showmode
+" Enhance command-line completion
+set wildmenu
+" Enable file type detection
+filetype on
+if has ("autocmd")
+	" Treat .json files as .js
+	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
+	" Treat .md files as Markdown
+	autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
+endif
+" Set visual bell
+set vb
+" Allow backspace in insert mode
+set backspace=indent,eol,start
+" Enable mouse in all modes
+set mouse=a

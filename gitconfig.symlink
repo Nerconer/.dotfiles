@@ -1,0 +1,60 @@
+[include]
+    # A local gitconfig, outside of version control.
+	# If the file doesn't exist it is silently ignored
+	path = ~/.gitconfig-local
+[alias]
+
+	st = status
+	sts = status -s
+	fuckit = reset --hard
+	unstage = reset HEAD --
+	b = branch
+	bd = branch -D
+	l = log
+	lo = log --graph --pretty=format:'%Cred%h%Creset %C(bold blue)%an%C(reset) - %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative 
+	df = diff
+	t = tag
+	ci = commit
+	cim = commit -m
+	cia = commit --ammend
+	ciar = commit --amend --reuse-message=HEAD
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	co = checkout
+	when = for-each-ref --sort=committerdate --format='%(refname:short) * %(authorname) * %(committerdate:relative)' refs/remotes/
+  
+	# Show verbose output about tags, branches or remotes
+	tags = tag -l
+	branches = branch --all
+	remotes = remote --verbose
+  
+	# Amend the currently staged files to the latest commit.
+	amend = commit --amend --reuse-message=HEAD
+	cob = checkout -b
+	cane = commit --amend --no-edit
+	# list all aliases
+	la = "!git config -l | grep alias | cut -c 7-"
+	# show number of commits per contributer, sorted
+	count = shortlog -sn
+[branch]
+
+	# Show most recently changed branches first.
+	sort = -committerdate
+
+[color "branch"]
+
+	current = yellow reverse
+	local = yellow
+	remote = green
+  
+[color "diff"]
+
+	meta = yellow bold
+	frag = magenta bold # line info
+	old = red # deletions
+	new = green # additions
+
+[color "status"]
+
+	added = green bold
+	changed = yellow bold
+	untracked = red

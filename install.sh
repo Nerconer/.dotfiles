@@ -1,6 +1,31 @@
 #!/usr/bin/env bash
 
+DOTFILES="$(pwd)"
 PROJECTS=~/projects
+
+COLOR_NONE="\033[0m"
+COLOR_YELLOW="\033[1;33m"
+COLOR_GREEN="\033[1;32m"
+COLOR_PURPLE="\033[1;35m"
+COLOR_GRAY="\033[1;38;5;243m"
+
+function title() {
+	echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
+	echo -e "${COLOR_GRAY}==============================${COLOR_NONE}\n"
+}
+
+function error() {
+	echo -e "${COLOR_RED}Error: ${COLOR_NONE}$1"
+	exit 1
+}
+
+function warning() {
+	echo -e "${COLOR_YELLOW}Warning: ${COLOR_NONE}$1"
+}
+
+function success() {
+	echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
+}
 
 function usage() {
 	echo -e "\nUsage: $0 <backup|link|git|homebrew|shell|macos|all>\n"
@@ -9,7 +34,7 @@ function usage() {
 function setup_backup() {
 	BACKUP_DIR=$HOME/dotfiles-backup
 
-	echo "Creating backup directory at $BACKUP_DIR"
+	title "Creating backup directory at $BACKUP_DIR"
 	
 	mkdir -p "$BACKUP_DIR"
 
@@ -24,15 +49,25 @@ function setup_backup() {
 }
 
 function setup_symlinks() {
-	echo "Settinh up symbolic links"
+	title "Setting up symbolic links"
+
+	for file in $(find -H "$DOTFILES" -name '*.symlink'); do
+		target="$HOME/.$(basename "$file" '.symlink')"
+		if [ -e "$target" ]; then
+			echo "~${target#$HOME} already exists...Skipping"
+		else
+			echo "Creating symlink for $file"
+			ln -s "$file" "$target"
+		fi
+	done
 }
 
 function setup_git() {
-	echo "Setting up Git"
+	title "Setting up Git"
 }
 
 function setup_homebrew() {
-	echo "Setting up Homebrew"
+	tile "Setting up Homebrew"
 	
 	if test ! "$(command -v brew)"; then
 		echo "Homebrew not installed. Installing..."
@@ -45,9 +80,7 @@ function setup_homebrew() {
 }
 
 function setup_shell() {
-	echo "Configurating Shell"
-	
-	
+	title "Configurating Shell"
 }
 
 [ ! -d "$PROJECTS" ] && echo "Creating projects directory..." && mkdir -p "$PROJECTS"
@@ -78,4 +111,5 @@ case "$1" in
 		;;
 esac
 
+success "Done."
 exit 0
