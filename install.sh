@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+PROJECTS=~/projects
+
 function usage() {
 	echo -e "\nUsage: $0 <backup|link|git|homebrew|shell|macos|all>\n"
 }
@@ -47,6 +49,8 @@ function setup_shell() {
 	
 	
 }
+
+[ ! -d "$PROJECTS" ] && echo "Creating projects directory..." && mkdir -p "$PROJECTS"
 
 case "$1" in
 	backup)
