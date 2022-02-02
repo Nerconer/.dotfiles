@@ -28,6 +28,30 @@ function success() {
 	echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
 }
 
+COLOR_NONE="\033[0m"
+COLOR_YELLOW="\033[1;33m"
+COLOR_GREEN="\033[1;32m"
+COLOR_PURPLE="\033[1;35m"
+COLOR_GRAY="\033[1;38;5;243m"
+
+function title() {
+	echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
+	echo -e "${COLOR_GRAY}==============================${COLOR_NONE}\n"
+}
+
+function error() {
+	echo -e "${COLOR_RED}Error: ${COLOR_NONE}$1"
+	exit 1
+}
+
+function warning() {
+	echo -e "${COLOR_YELLOW}Warning: ${COLOR_NONE}$1"
+}
+
+function success() {
+	echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
+}
+
 function usage() {
 	echo -e "\nUsage: $0 <backup|link|git|homebrew|shell|all>\n"
 }
@@ -61,6 +85,30 @@ function setup_symlinks() {
 			ln -s "$file" "$target"
 		fi
 	done
+
+	info "installing to ~/.config"
+	if [ ! -d "$HOME/.config" ]; then
+		info "Creating ~/.config"
+		mkdir -p "$HOME/.config"
+	fi
+	
+	config_files=$(find "$DOTFILES/config" -maxdepth 1 2>/dev/null)
+	for config in $config_files; do
+		target="$HOME/.config/$(basename "$config")"
+		if [ -e "$target" ]; then
+			info "~${target#$HOME} already exists... Skipping."
+		else
+			info "Creating symlink for $config"
+			ln -s "$config" "$target"
+		fi
+	done
+
+	if [ -e "$HOME/.vimrc" ]; then
+		echo "./vimrc already exists... Skipping"
+  else
+		echo "Creating symlink for .vimrc"
+		ln -s "$DOTFILES/config/nvim/init.vim" "$HOME/.vimrc"
+  fi
 }
 
 function setup_scripts() {
@@ -79,6 +127,15 @@ function setup_scripts() {
 
 function setup_git() {
 	title "Setting up Git"
+
+	defaultName=$(git config user.name)
+	defaultEmail=$(git config user.email)
+
+  read -rp "Name [$defaultName] " name
+  read -rp "Email [$defaultEmail] " email
+
+	git config -f ~/.gitconfig-local user.name "${name:-$defaultName}"
+  git config -f ~/.gitconfig-local user.email "${email:-$defaultEmail}"
 }
 
 function setup_homebrew() {
@@ -88,14 +145,22 @@ function setup_homebrew() {
 		echo "Homebrew not installed. Installing..."
 		# Run as a login shell (non-interactive) so that the script doesn't pause for user input
 		curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash --login
-    	fi
+  fi
 	
 	# install brew dependencies from Brewfile
-    	brew bundle
+  brew bundle
 }
 
 function setup_shell() {
 	title "Configurating Shell"
+
+	echo "Installing Oh My Zsh..."
+	if [ ! -z $ZSH ]; then
+		echo "Oh My Zsh already exists, skipping..."
+	else
+		mkdir oh-my-zsh-temp && cd $_
+		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+	fi
 }
 
 [ ! -d "$PROJECTS" ] && echo "Creating projects directory..." && mkdir -p "$PROJECTS"

@@ -1,5 +1,5 @@
 [include]
-    # A local gitconfig, outside of version control.
+  # A local gitconfig, outside of version control.
 	# If the file doesn't exist it is silently ignored
 	path = ~/.gitconfig-local
 [alias]
@@ -31,9 +31,11 @@
 	amend = commit --amend --reuse-message=HEAD
 	cob = checkout -b
 	cane = commit --amend --no-edit
+
 	# list all aliases
 	la = "!git config -l | grep alias | cut -c 7-"
 	alias = "!git config -l | grep alias | cut -c 7-"
+
 	# show number of commits per contributer, sorted
 	count = shortlog -sn
 [branch]
