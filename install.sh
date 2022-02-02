@@ -2,6 +2,7 @@
 
 DOTFILES="$(pwd)"
 PROJECTS=~/projects
+BIN=~/bin
 
 COLOR_NONE="\033[0m"
 COLOR_YELLOW="\033[1;33m"
@@ -28,7 +29,7 @@ function success() {
 }
 
 function usage() {
-	echo -e "\nUsage: $0 <backup|link|git|homebrew|shell|macos|all>\n"
+	echo -e "\nUsage: $0 <backup|link|git|homebrew|shell|all>\n"
 }
 
 function setup_backup() {
@@ -62,12 +63,26 @@ function setup_symlinks() {
 	done
 }
 
+function setup_scripts() {
+	title "Setting up scripts"
+
+	for file in $(find -H "$DOTFILES/scripts" -name '*.sh'); do
+		target="$HOME/bin/$(basename "$file" '.sh')"
+		if [ -e "$target" ]; then
+			echo "~${target#$HOME} already exists...Skipping"
+		else
+			echo "Creating symlink for $file in $target" 
+			ln -s "$file" "$target"
+		fi
+	done
+}
+
 function setup_git() {
 	title "Setting up Git"
 }
 
 function setup_homebrew() {
-	tile "Setting up Homebrew"
+	title "Setting up Homebrew"
 	
 	if test ! "$(command -v brew)"; then
 		echo "Homebrew not installed. Installing..."
@@ -85,12 +100,15 @@ function setup_shell() {
 
 [ ! -d "$PROJECTS" ] && echo "Creating projects directory..." && mkdir -p "$PROJECTS"
 
+[ ! -d "$BIN" ] && echo "Creating ~/bin directory..." && mkdir ~/bin
+
 case "$1" in
 	backup)
 		setup_backup
 		;;
 	link)
 		setup_symlinks
+		setup_scripts
 		;;
 	git)
 		setup_git
@@ -103,8 +121,9 @@ case "$1" in
 		;;
 	all)
 		setup_symlinks
-		setup_homebrew
+		setup_scripts
 		setup_shell
+		setup_homebrew
 		;;
 	*)
 		usage

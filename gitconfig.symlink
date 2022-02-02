@@ -33,6 +33,7 @@
 	cane = commit --amend --no-edit
 	# list all aliases
 	la = "!git config -l | grep alias | cut -c 7-"
+	alias = "!git config -l | grep alias | cut -c 7-"
 	# show number of commits per contributer, sorted
 	count = shortlog -sn
 [branch]
