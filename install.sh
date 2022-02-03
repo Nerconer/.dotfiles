@@ -4,6 +4,10 @@ DOTFILES="$(pwd)"
 PROJECTS=~/projects
 BIN=~/bin
 
+DOTFILES_DIRECTORY="${HOME}/.dotfiles"
+DOTFILES_TARBALL_PATH="https://github.com/Nerconer/dotfiles/tarball/master"
+DOTFILES_GIT_REMOTE="git@github.com:Nerconer/dotfiles.git"
+
 COLOR_NONE="\033[0m"
 COLOR_YELLOW="\033[1;33m"
 COLOR_GREEN="\033[1;32m"
@@ -53,7 +57,21 @@ function success() {
 }
 
 function usage() {
-	echo -e "\nUsage: $0 <backup|link|git|homebrew|shell|all>\n"
+cat <<EOT
+	dotfiles - David Solà
+	Usage: $(basename "$0") [options]
+	Options:
+			-h, --help	Print this help text
+			backup     	Generates a Backup file
+			link   			Configures all symlinks
+			git       	Configures Git
+			homebrew    Install dependencies
+			shell       Configures Shell
+			all       	Full setup and configuration
+	Documentation can be found at https://github.com/Nerconer/dotfiles
+	Copyright (c) David Solà
+	Licensed under the MIT license.
+EOT
 }
 
 function setup_backup() {
@@ -165,7 +183,12 @@ function setup_shell() {
 
 [ ! -d "$PROJECTS" ] && echo "Creating projects directory..." && mkdir -p "$PROJECTS"
 
-[ ! -d "$BIN" ] && echo "Creating ~/bin directory..." && mkdir ~/bin
+[ ! -d "$BIN" ] && echo "Creating ~/bin directory..." && mkdir "$BIN"
+
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+	usage
+	exit
+fi
 
 case "$1" in
 	backup)
@@ -178,7 +201,7 @@ case "$1" in
 	git)
 		setup_git
 		;;
-	hombrew)
+	homebrew)
 		setup_homebrew
 		;;
 	shell)
@@ -191,6 +214,7 @@ case "$1" in
 		setup_homebrew
 		;;
 	*)
+		echo -e "Unknown option $1"
 		usage
 		;;
 esac

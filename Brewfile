@@ -21,8 +21,5 @@ brew "zsh"
 brew "nmap"
 cask "visual-studio-code"
 brew "dos2unix"
-<<<<<<< HEAD
-=======
 brew "nvim"
->>>>>>> dfe56031f76251a508bc5ae2a2383897a9e6ad68
 
