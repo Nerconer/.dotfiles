@@ -1,12 +1,27 @@
 #!/usr/bin/env bash
 
-DOTFILES="$(pwd)"
 PROJECTS=~/projects
 BIN=~/bin
 
 DOTFILES_DIRECTORY="${HOME}/.dotfiles"
 DOTFILES_TARBALL_PATH="https://github.com/Nerconer/dotfiles/tarball/master"
 DOTFILES_GIT_REMOTE="git@github.com:Nerconer/dotfiles.git"
+
+echo ""
+
+# If missing, download and extract the dotfiles repository
+if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
+    echo "Downloading dotfiles from repository..."
+    mkdir ${DOTFILES_DIRECTORY}
+    # Get the tarball
+    curl -fsSLo ${HOME}/dotfiles.tar.gz ${DOTFILES_TARBALL_PATH}
+    # Extract to the dotfiles directory
+    tar -zxf ${HOME}/dotfiles.tar.gz --strip-components 1 -C ${DOTFILES_DIRECTORY}
+    # Remove the tarball
+    rm -rf ${HOME}/dotfiles.tar.gz
+fi
+
+cd ${DOTFILES_DIRECTORY}
 
 COLOR_NONE="\033[0m"
 COLOR_YELLOW="\033[1;33m"
@@ -94,7 +109,7 @@ function setup_backup() {
 function setup_symlinks() {
 	title "Setting up symbolic links"
 
-	for file in $(find -H "$DOTFILES" -name '*.symlink'); do
+	for file in $(find -H "$DOTFILES_DIRECTORY" -name '*.symlink'); do
 		target="$HOME/.$(basename "$file" '.symlink')"
 		if [ -e "$target" ]; then
 			echo "~${target#$HOME} already exists...Skipping"
@@ -110,7 +125,7 @@ function setup_symlinks() {
 		mkdir -p "$HOME/.config"
 	fi
 	
-	config_files=$(find "$DOTFILES/config" -maxdepth 1 2>/dev/null)
+	config_files=$(find "$DOTFILES_DIRECTORY/config" -maxdepth 1 2>/dev/null)
 	for config in $config_files; do
 		target="$HOME/.config/$(basename "$config")"
 		if [ -e "$target" ]; then
@@ -125,14 +140,14 @@ function setup_symlinks() {
 		echo "./vimrc already exists... Skipping"
   else
 		echo "Creating symlink for .vimrc"
-		ln -s "$DOTFILES/config/nvim/init.vim" "$HOME/.vimrc"
+		ln -s "$DOTFILES_DIRECTORY/config/nvim/init.vim" "$HOME/.vimrc"
   fi
 }
 
 function setup_scripts() {
 	title "Setting up scripts"
 
-	for file in $(find -H "$DOTFILES/scripts" -name '*.sh'); do
+	for file in $(find -H "$DOTFILES_DIRECTORY/scripts" -name '*.sh'); do
 		target="$HOME/bin/$(basename "$file" '.sh')"
 		if [ -e "$target" ]; then
 			echo "~${target#$HOME} already exists...Skipping"
@@ -207,15 +222,11 @@ case "$1" in
 	shell)
 		setup_shell
 		;;
-	all)
+	all|*)
 		setup_symlinks
 		setup_scripts
 		setup_shell
 		setup_homebrew
-		;;
-	*)
-		echo -e "Unknown option $1"
-		usage
 		;;
 esac
 

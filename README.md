@@ -1,6 +1,11 @@
 # dotfiles
 Dotfiles, configurations, and general workspace setup. Because every dev should have one.
 
+## How to install
+```bash
+$ bash -c "$(curl -fsSL raw.github.com/Nerconer/dotfiles/master/install.sh)"
+```
+
 ## git-aliases
 Configure Notepad++ as the default text editor:
 ```bash
