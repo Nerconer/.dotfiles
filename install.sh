@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 PROJECTS=~/projects
 BIN=~/bin
 
@@ -11,65 +13,47 @@ echo ""
 
 # If missing, download and extract the dotfiles repository
 if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
-    echo "Downloading dotfiles from repository..."
-    mkdir ${DOTFILES_DIRECTORY}
-    # Get the tarball
-    curl -fsSLo ${HOME}/dotfiles.tar.gz ${DOTFILES_TARBALL_PATH}
-    # Extract to the dotfiles directory
-    tar -zxf ${HOME}/dotfiles.tar.gz --strip-components 1 -C ${DOTFILES_DIRECTORY}
-    # Remove the tarball
-    rm -rf ${HOME}/dotfiles.tar.gz
+	echo "Downloading dotfiles from repository..."
+	mkdir ${DOTFILES_DIRECTORY}
+	# Get the tarball
+	curl -fsSLo ${HOME}/dotfiles.tar.gz ${DOTFILES_TARBALL_PATH}
+	# Extract to the dotfiles directory
+	tar -zxf ${HOME}/dotfiles.tar.gz --strip-components 1 -C ${DOTFILES_DIRECTORY}
+	# Remove the tarball
+	rm -rf ${HOME}/dotfiles.tar.gz
 fi
 
 cd ${DOTFILES_DIRECTORY}
 
-COLOR_NONE="\033[0m"
-COLOR_YELLOW="\033[1;33m"
-COLOR_GREEN="\033[1;32m"
-COLOR_PURPLE="\033[1;35m"
-COLOR_GRAY="\033[1;38;5;243m"
+source ./lib/utils
 
-function title() {
-	echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
-	echo -e "${COLOR_GRAY}==============================${COLOR_NONE}\n"
-}
+if ! command_exists 'brew'; then
+	setup_homebrew
+fi
 
-function error() {
-	echo -e "${COLOR_RED}Error: ${COLOR_NONE}$1"
-	exit 1
-}
+if ! command_exists 'git'; then
+	echo "Updating Homebrew..."	
+  brew update
+	echo "Installing Git..."
+	brew install git
+fi
 
-function warning() {
-	echo -e "${COLOR_YELLOW}Warning: ${COLOR_NONE}$1"
-}
+# Initialize the git repository if it's missing
+if ! is_git_repo; then
+	echo "Initializing git repository..."
+	git init
+	git remote add origin ${DOTFILES_GIT_REMOTE}
+	git fetch origin master
+	# Reset the index and working tree to the fetched HEAD
+	# (submodules are cloned in the subsequent sync step)
+	git reset --hard FETCH_HEAD
+	# Remove any untracked files
+	git clean -fd
+fi
 
-function success() {
-	echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
-}
-
-COLOR_NONE="\033[0m"
-COLOR_YELLOW="\033[1;33m"
-COLOR_GREEN="\033[1;32m"
-COLOR_PURPLE="\033[1;35m"
-COLOR_GRAY="\033[1;38;5;243m"
-
-function title() {
-	echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
-	echo -e "${COLOR_GRAY}==============================${COLOR_NONE}\n"
-}
-
-function error() {
-	echo -e "${COLOR_RED}Error: ${COLOR_NONE}$1"
-	exit 1
-}
-
-function warning() {
-	echo -e "${COLOR_YELLOW}Warning: ${COLOR_NONE}$1"
-}
-
-function success() {
-	echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
-}
+echo -e "Syncing dotfiles..."
+# Pull latest changes
+git pull --rebase origin master
 
 function usage() {
 cat <<EOT
@@ -119,19 +103,16 @@ function setup_symlinks() {
 		fi
 	done
 
-	info "installing to ~/.config"
-	if [ ! -d "$HOME/.config" ]; then
-		info "Creating ~/.config"
-		mkdir -p "$HOME/.config"
-	fi
+	echo "Installing ~/.config content..."
+	[ ! -d "$HOME/.config" ] && echo "Creating ~/.config folder..." && mkdir -p "$HOME/.config"
 	
 	config_files=$(find "$DOTFILES_DIRECTORY/config" -maxdepth 1 2>/dev/null)
 	for config in $config_files; do
 		target="$HOME/.config/$(basename "$config")"
 		if [ -e "$target" ]; then
-			info "~${target#$HOME} already exists... Skipping."
+			echo "~${target#$HOME} already exists... Skipping."
 		else
-			info "Creating symlink for $config"
+			echo "Creating symlink for $config"
 			ln -s "$config" "$target"
 		fi
 	done
