@@ -62,13 +62,14 @@ set background=dark    " Setting dark mode
 "set background=light   " Setting light mode
 
 " Plugins
-call plug#begin('~/.config/nvim/plugged')
+call plug#begin('~/.dotfiles/config/nvim/plugged')
 
 Plug 'morhetz/gruvbox'
-
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'lukas-reineke/indent-blanklie.nvim'
 
 call plug#end()
+
 
 " coc-git
 nmap [g <Plug>(coc-git-prevchunk)
