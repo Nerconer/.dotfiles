@@ -1,6 +1,9 @@
 # Enable mouse mode (tmux 2.1 and above)
 set -g mouse on
 
+set -g default-terminal "tmux-256color"
+set -ga terminal-overrides ",xterm-256color:Tc"
+
 # Remap prefix from 'C-b' to 'C-a'
 unbind C-b
 set-option -g prefix C-a
@@ -20,9 +23,6 @@ bind | split-window -h
 bind - split-window -v
 unbind '"'
 unbind %
-
-set -q -g status-utf8 on # Expect utf-8 (tmux < 2.2)
-set -g utf8 on
 
 # Boost history
 set -g history-limit 5000
