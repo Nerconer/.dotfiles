@@ -6,8 +6,8 @@ set clipboard=unnamed
 set ttyfast
 " New lines inherit the identation of previous lines
 set autoindent
-" Make tabs as wide as four spaces
-set tabstop=4 softtabstop=4
+" Make tabs as wide as two spaces
+set tabstop=2 softtabstop=2 smarttab expandtab
 " Enable per-directory .vimrc files
 set exrc
 " Show the filename in the window title bar
@@ -66,7 +66,7 @@ call plug#begin('~/.dotfiles/config/nvim/plugged')
 
 Plug 'morhetz/gruvbox'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'lukas-reineke/indent-blanklie.nvim'
+Plug 'lukas-reineke/indent-blankline.nvim'
 
 call plug#end()
 

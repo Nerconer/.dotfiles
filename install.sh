@@ -82,7 +82,7 @@ function setup_backup() {
 
 	for file in "$HOME/.config/nvim" "$HOME/.vim" "$HOME/.vimrc"; do
 	    if [ ! -L "$file" ]; then
-            echo "backing up $file"
+            echo "Backing up $file"
             cp -rf "$file" "$BACKUP_DIR"
         else
             warning "$file does not exist at this location or is a symlink"
@@ -117,11 +117,12 @@ function setup_symlinks() {
 		fi
 	done
 
-	if [ -e "$HOME/.vimrc" ]; then
-		echo "./vimrc already exists... Skipping"
+	if [ -e "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
+		echo "vim-plug already exists... Skipping"
   else
-		echo "Creating symlink for .vimrc"
-		ln -s "$DOTFILES_DIRECTORY/config/nvim/init.vim" "$HOME/.vimrc"
+		echo "Installing vim-plug"
+		curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   fi
 }
 
