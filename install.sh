@@ -14,16 +14,16 @@ echo ""
 # If missing, download and extract the dotfiles repository
 if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
 	echo "Downloading dotfiles from repository..."
-	mkdir ${DOTFILES_DIRECTORY}
+	mkdir "${DOTFILES_DIRECTORY}"
 	# Get the tarball
-	curl -fsSLo ${HOME}/dotfiles.tar.gz ${DOTFILES_TARBALL_PATH}
+	curl -fsSLo "${HOME}"/dotfiles.tar.gz ${DOTFILES_TARBALL_PATH}
 	# Extract to the dotfiles directory
-	tar -zxf ${HOME}/dotfiles.tar.gz --strip-components 1 -C ${DOTFILES_DIRECTORY}
+	tar -zxf "${HOME}"/dotfiles.tar.gz --strip-components 1 -C "${DOTFILES_DIRECTORY}"
 	# Remove the tarball
-	rm -rf ${HOME}/dotfiles.tar.gz
+	rm -rf "${HOME}"/dotfiles.tar.gz
 fi
 
-cd ${DOTFILES_DIRECTORY}
+cd "${DOTFILES_DIRECTORY}"
 
 source ./lib/utils
 
@@ -96,7 +96,7 @@ function setup_symlinks() {
 	for file in $(find -H "$DOTFILES_DIRECTORY" -name '*.symlink'); do
 		target="$HOME/.$(basename "$file" '.symlink')"
 		if [ -e "$target" ]; then
-			echo "~${target#$HOME} already exists...Skipping"
+			echo "~${target#"$HOME"} already exists...Skipping"
 		else
 			echo "Creating symlink for $file"
 			ln -s "$file" "$target"
@@ -132,7 +132,7 @@ function setup_scripts() {
 	for file in $(find -H "$DOTFILES_DIRECTORY/scripts" -name '*.sh'); do
 		target="$HOME/bin/$(basename "$file" '.sh')"
 		if [ -e "$target" ]; then
-			echo "~${target#$HOME} already exists...Skipping"
+			echo "~${target#"$HOME"} already exists...Skipping"
 		else
 			echo "Creating symlink for $file in $target" 
 			ln -s "$file" "$target"
@@ -170,10 +170,10 @@ function setup_shell() {
 	title "Configurating Shell"
 
 	echo "Installing Oh My Zsh..."
-	if [ ! -z $ZSH ]; then
+	if [ -n "$ZSH" ]; then
 		echo "Oh My Zsh already exists, skipping..."
 	else
-		mkdir oh-my-zsh-temp && cd $_
+		mkdir oh-my-zsh-temp && cd "$_"
 		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 	fi
 }
