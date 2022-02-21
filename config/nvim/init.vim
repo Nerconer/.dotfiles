@@ -66,7 +66,6 @@ call plug#begin('~/.dotfiles/config/nvim/plugged')
 
 Plug 'morhetz/gruvbox'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'lukas-reineke/indent-blankline.nvim'
 
 call plug#end()
 
