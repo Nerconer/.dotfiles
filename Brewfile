@@ -22,4 +22,5 @@ brew "nmap"
 cask "visual-studio-code"
 brew "dos2unix"
 brew "nvim"
+brew "ncdu"
 
