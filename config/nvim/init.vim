@@ -7,7 +7,7 @@ set ttyfast
 " New lines inherit the identation of previous lines
 set autoindent
 " Make tabs as wide as two spaces
-set tabstop=2 softtabstop=2 smarttab expandtab
+set tabstop=2 softtabstop=2 shiftwidth=2 smarttab expandtab
 " Enable per-directory .vimrc files
 set exrc
 " Show the filename in the window title bar
