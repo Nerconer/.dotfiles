@@ -1,4 +1,4 @@
-# dotfiles
+# .dotfiles
 Dotfiles, configurations, and general workspace setup. Because every dev should have one.
 
 ## How to install
