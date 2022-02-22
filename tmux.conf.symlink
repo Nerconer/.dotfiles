@@ -9,6 +9,9 @@ unbind C-b
 set-option -g prefix C-a
 bind-key C-a send-prefix
 
+# Bottom bar
+set -g status-style 'bg=#333333 fg=#5eacd3'
+
 # Reload config file (change file location to your the tmux.conf you want to use)
 bind r source-file ~/.tmux.conf
 
