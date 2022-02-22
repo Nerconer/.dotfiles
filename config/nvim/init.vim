@@ -62,7 +62,7 @@ set background=dark    " Setting dark mode
 "set background=light   " Setting light mode
 
 " Plugins
-call plug#begin('~/.dotfiles/config/nvim/plugged')
+call plug#begin('~/.vim/plugged')
 
 Plug 'morhetz/gruvbox'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -71,7 +71,7 @@ Plug 'nvim-telescope/telescope.nvim'
 
 call plug#end()
 
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>ff <cmd>Telescope git_files<cr>
 
 " coc-git
 nmap [g <Plug>(coc-git-prevchunk)
