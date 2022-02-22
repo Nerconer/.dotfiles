@@ -45,11 +45,11 @@ plugins=(git zsh-autosuggestions z)
 
 source $ZSH/oh-my-zsh.sh
 
-export DOTFILES=~/dotfiles/
+export DOTFILES=~/.dotfiles/
 
 # Load the shell dotfiles, and then some:
 if [ -d $DOTFILES ]; then
-	for file in $DOTFILES{path,zsh_prompt,exports,aliases,functions,extra}; do
+	for file in $DOTFILES{exports,aliases,functions}; do
 		[ -r "$file" ] && [ -f "$file" ] && source "$file";
 	done;
 	unset file;

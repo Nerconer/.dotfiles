@@ -2,14 +2,12 @@
 set nocompatible
 " Use Linux/OS clipboard by default
 set clipboard=unnamed
-" Allow cursor keys in insert mode
-set esckeys
 " Optimize for fast terminal connections
 set ttyfast
 " New lines inherit the identation of previous lines
 set autoindent
-" Make tabs as wide as four spaces
-set tabstop=4 softtabstop=4
+" Make tabs as wide as two spaces
+set tabstop=2 softtabstop=2 shiftwidth=2 smarttab expandtab
 " Enable per-directory .vimrc files
 set exrc
 " Show the filename in the window title bar
@@ -54,3 +52,38 @@ set vb
 set backspace=indent,eol,start
 " Enable mouse in all modes
 set mouse=a
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+autocmd vimenter * ++nested colorscheme gruvbox
+set background=dark    " Setting dark mode
+"set background=light   " Setting light mode
+
+" Plugins
+call plug#begin('~/.dotfiles/nvim/plugged')
+
+Plug 'morhetz/gruvbox'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+call plug#end()
+
+nnoremap <leader>ff <cmd>Telescope git_files<cr>
+
+" coc-git
+nmap [g <Plug>(coc-git-prevchunk)
+nmap ]g <Plug>(coc-git-nextchunk)
+nmap gs <Plug>(coc-git-chunkinfo)
+nmap gu :CocCommand git.chunkUndo<cr>
+
+nmap <silent> <leader>k :CocCommand explorer<cr>
+
+"remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <silent> gh <Plug>(coc-doHover)

@@ -9,6 +9,8 @@ DOTFILES_DIRECTORY="${HOME}/.dotfiles"
 DOTFILES_TARBALL_PATH="https://github.com/Nerconer/dotfiles/tarball/master"
 DOTFILES_GIT_REMOTE="git@github.com:Nerconer/dotfiles.git"
 
+declare -a LINKS="("git" "nano" "nvim" "tmux" "scripts" "zsh")"
+
 echo ""
 
 # If missing, download and extract the dotfiles repository
@@ -93,29 +95,10 @@ function setup_backup() {
 function setup_symlinks() {
 	title "Setting up symbolic links"
 
-	for file in $(find -H "$DOTFILES_DIRECTORY" -name '*.symlink'); do
-		target="$HOME/.$(basename "$file" '.symlink')"
-		if [ -e "$target" ]; then
-			echo "~${target#"$HOME"} already exists...Skipping"
-		else
-			echo "Creating symlink for $file"
-			ln -s "$file" "$target"
-		fi
-	done
-
-	echo "Installing ~/.config content..."
-	[ ! -d "$HOME/.config" ] && echo "Creating ~/.config folder..." && mkdir -p "$HOME/.config"
-	
-	config_files=$(find "$DOTFILES_DIRECTORY/config" -maxdepth 1 2>/dev/null)
-	for config in $config_files; do
-		target="$HOME/.config/$(basename "$config")"
-		if [ -e "$target" ]; then
-			echo "~${target#$HOME} already exists... Skipping."
-		else
-			echo "Creating symlink for $config"
-			ln -s "$config" "$target"
-		fi
-	done
+  for folder in "${LINKS[@]}"; do
+    stow -D "$folder"
+    stow "$folder"
+  done
 
 	if [ -e "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
 		echo "vim-plug already exists... Skipping"
@@ -123,21 +106,9 @@ function setup_symlinks() {
 		echo "Installing vim-plug"
 		curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    echo "Installing nvim plugins..."
+    nvim --headless +PlugInstall +qall
   fi
-}
-
-function setup_scripts() {
-	title "Setting up scripts"
-
-	for file in $(find -H "$DOTFILES_DIRECTORY/scripts" -name '*.sh'); do
-		target="$HOME/bin/$(basename "$file" '.sh')"
-		if [ -e "$target" ]; then
-			echo "~${target#"$HOME"} already exists...Skipping"
-		else
-			echo "Creating symlink for $file in $target" 
-			ln -s "$file" "$target"
-		fi
-	done
 }
 
 function setup_git() {
@@ -193,7 +164,6 @@ case "$1" in
 		;;
 	link)
 		setup_symlinks
-		setup_scripts
 		;;
 	git)
 		setup_git
@@ -206,7 +176,6 @@ case "$1" in
 		;;
 	all|*)
 		setup_symlinks
-		setup_scripts
 		setup_shell
 		setup_homebrew
 		;;

@@ -5,4 +5,4 @@ set -e
 
 echo $@
 
-bash "${HOME}/.dotfiles/install.sh" $@
+bash "${HOME}/.dotfiles/install" $@

@@ -23,4 +23,4 @@ cask "visual-studio-code"
 brew "dos2unix"
 brew "nvim"
 brew "ncdu"
-
+brew "stow"
