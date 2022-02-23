@@ -1,5 +1,7 @@
-# If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+# Include ~/bin scripts in PATH
+export PATH=$HOME/bin:$PATH
+# Include Homebrew in PATH
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
 TERM=xterm-256color
 
