@@ -1,0 +1,10 @@
+export DOTFILES=~/.dotfiles
+for file in $DOTFILES/aliases; do
+  source "$file";
+done;
+
+export XDG_CONFIG_HOME=$HOME/.config
+
+linux_hier() {
+  man hier
+}

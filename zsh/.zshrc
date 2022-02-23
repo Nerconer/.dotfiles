@@ -45,15 +45,17 @@ plugins=(git zsh-autosuggestions z)
 
 source $ZSH/oh-my-zsh.sh
 
-export DOTFILES=~/.dotfiles/
+#export DOTFILES=~/.dotfiles/
 
 # Load the shell dotfiles, and then some:
-if [ -d $DOTFILES ]; then
-	for file in $DOTFILES{exports,aliases,functions}; do
-		[ -r "$file" ] && [ -f "$file" ] && source "$file";
-	done;
-	unset file;
-fi
+#if [ -d $DOTFILES ]; then
+#	for file in $DOTFILES{exports,aliases,functions}; do
+#		[ -r "$file" ] && [ -f "$file" ] && source "$file";
+#	done;
+#	unset file;
+#fi
+
+source ~/.zsh_profile
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
