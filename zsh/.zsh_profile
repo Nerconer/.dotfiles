@@ -5,6 +5,8 @@ done;
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+export FZF_DEFAULT_COMMAND='rg --files'
+
 export XDG_CONFIG_HOME=$HOME/.config
 
 linux_hier() {
