@@ -3,6 +3,8 @@ for file in $DOTFILES/aliases; do
   source "$file";
 done;
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 export XDG_CONFIG_HOME=$HOME/.config
 
 linux_hier() {

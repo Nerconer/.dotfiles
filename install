@@ -2,7 +2,7 @@
 
 set -e
 
-PROJECTS=~/projects
+PERSONAL=~/personal
 BIN=~/bin
 
 DOTFILES_DIRECTORY="${HOME}/.dotfiles"
@@ -149,7 +149,7 @@ function setup_shell() {
 	fi
 }
 
-[ ! -d "$PROJECTS" ] && echo "Creating projects directory..." && mkdir -p "$PROJECTS"
+[ ! -d "$PERSONAL" ] && echo "Creating personal directory..." && mkdir -p "$PERSONAL"
 
 [ ! -d "$BIN" ] && echo "Creating ~/bin directory..." && mkdir "$BIN"
 
