@@ -71,6 +71,8 @@ Plug 'nvim-telescope/telescope.nvim'
 
 call plug#end()
 
+let mapleader = " "
+
 nnoremap <leader>ff <cmd>Telescope git_files<cr>
 
 " coc-git
