@@ -38,6 +38,10 @@ set signcolumn=yes
 set showmode
 " Enhance command-line completion
 set wildmenu
+" Ignore files
+set wildignore+=**/node_modules/*
+set wildignore+=**/dist/*
+set wildignore+=**/.git/*
 " Enable file type detection
 filetype on
 if has ("autocmd")
@@ -72,6 +76,11 @@ Plug 'nvim-telescope/telescope.nvim'
 call plug#end()
 
 let mapleader = " "
+
+" leader-w makes a new split and moves to it
+nnoremap <leader>w <C-w>v<C-w>l
+" leader-W makes a new horizontal split and moves to it
+nnoremap <leader>W <C-w>s<C-w>j
 
 nnoremap <leader>ff <cmd>Telescope git_files<cr>
 
