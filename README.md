@@ -25,3 +25,9 @@ Font size: 12
 
     alias alias1='alias1 value'
     alias alias2='alias2 value'
+
+### Troubleshooting
+#### Zsh shell not loading
+Install it using `sudo apt install zsh`. It should appear inside `/etc/shells` file.
+Set as default `chsh -s $(which zsh)`.
+Log out and log back in again.
