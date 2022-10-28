@@ -80,11 +80,11 @@ function setup_homebrew() {
 		echo "Homebrew not installed. Installing..."
 		# Run as a login shell (non-interactive) so that the script doesn't pause for user input
 		NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  	fi
 
-	echo '# Set PATH, MANPATH, etc., for Homebrew.' >> /home/$USER/.profile
-	echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/$USER/.profile
-	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+		echo '# Set PATH, MANPATH, etc., for Homebrew.' >> /home/$USER/.zprofile
+		echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/$USER/.zprofile
+		eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  	fi
 
 	# install brew dependencies from Brewfile
   	brew bundle
