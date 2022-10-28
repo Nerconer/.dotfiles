@@ -1,0 +1,104 @@
+source ./lib/utils
+
+function usage() {
+cat <<EOT
+	dotfiles - David Solà
+	Usage: $(basename "$0") [options]
+	Options:
+			-h, --help	Print this help text
+			backup     	Generates a Backup file
+			link   			Configures all symlinks
+			git       	Configures Git
+			homebrew    Install dependencies
+			shell       Configures Shell
+			all       	Full setup and configuration
+	Documentation can be found at https://github.com/Nerconer/dotfiles
+	Copyright (c) David Solà
+	Licensed under the MIT license.
+EOT
+}
+
+function setup_backup() {
+	BACKUP_DIR=$HOME/dotfiles-backup
+
+	title "Creating backup directory at $BACKUP_DIR"
+	
+	mkdir -p "$BACKUP_DIR"
+
+	for file in "$HOME/.config/nvim" "$HOME/.vim" "$HOME/.vimrc"; do
+	    if [ ! -L "$file" ]; then
+            echo "Backing up $file"
+            cp -rf "$file" "$BACKUP_DIR"
+        else
+            warning "$file does not exist at this location or is a symlink"
+        fi
+    done
+}
+
+function setup_symlinks() {
+	title "Setting up symbolic links"
+
+	for folder in "${LINKS[@]}"; do
+		stow -D "$folder"
+		stow "$folder"
+	done
+
+		if [ -e "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
+			echo "vim-plug already exists... Skipping"
+	else
+			echo "Installing vim-plug"
+			curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		echo "Installing nvim plugins..."
+		nvim --headless +PlugInstall +qall
+	fi
+
+	# ZSH plugin installation
+	[ -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ] && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+	[ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-z" ] && git clone https://github.com/agkozak/zsh-z ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-z
+}
+
+function setup_git() {
+	title "Setting up Git"
+
+	defaultName=$(git config user.name)
+	defaultEmail=$(git config user.email)
+
+  	read -rp "Name [$defaultName] " name
+  	read -rp "Email [$defaultEmail] " email
+
+	git config -f ~/.gitconfig-local user.name "${name:-$defaultName}"
+  	git config -f ~/.gitconfig-local user.email "${email:-$defaultEmail}"
+}
+
+function setup_homebrew() {
+	title "Setting up Homebrew"
+	
+	if test ! "$(command -v brew)"; then
+		echo "Homebrew not installed. Installing..."
+		# Run as a login shell (non-interactive) so that the script doesn't pause for user input
+		NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  	fi
+
+	echo '# Set PATH, MANPATH, etc., for Homebrew.' >> /home/$USER/.profile
+	echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/$USER/.profile
+	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+	# install brew dependencies from Brewfile
+  	brew bundle
+}
+
+function setup_shell() {
+	title "Configurating Shell"
+
+	echo "Installing Oh My Zsh..."
+	if [ -n "$ZSH" ]; then
+		echo "Oh My Zsh already exists, skipping..."
+	else
+		mkdir oh-my-zsh-temp && cd "$_"
+		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+	fi
+
+	# Add zsh shell
+	command -v zsh | sudo tee -a /etc/shells
+}
