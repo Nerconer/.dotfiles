@@ -8,7 +8,8 @@ alias h="history"
 alias ip="curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g'"
 alias g="git"
 alias n="nano"
-alias top="htop"
+alias top="btop"
+alias ports="lsof -i -P | grep -i 'listen'"
 
 # use nvim, but don't make me think about it
 [[ -n "$(command -v nvim)" ]] && alias vim="nvim"
@@ -17,3 +18,11 @@ alias top="htop"
 alias grep='grep --color=auto'
 alias df='df -h' # disk free, in Gigabytes, not bytes
 alias du='du -h -c' # calculate disk usage for a folder
+
+mov2mp4() {
+  ffmpeg -i "$1" "${1%.*}.mp4"
+}
+
+mov2gif() {
+  ffmpeg -i "$1" -vf "fps=20,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 "${1%.*}.gif"
+}
