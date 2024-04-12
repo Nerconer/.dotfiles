@@ -1,9 +1,8 @@
 [include]
-  # A local gitconfig, outside of version control.
+  	# A local gitconfig, outside of version control.
 	# If the file doesn't exist it is silently ignored
 	path = ~/.gitconfig-local
 [alias]
-
 	st = status
 	sts = status -s
 	fuckit = reset --hard
@@ -32,39 +31,34 @@
 	cob = checkout -b
 	cane = commit --amend --no-edit
 
-	# list all aliases
+	# List all aliases
 	la = "!git config -l | grep alias | cut -c 7-"
 	alias = "!git config -l | grep alias | cut -c 7-"
 
-	pr= pull --rebase
+	pr = pull --rebase
 
-	# show number of commits per contributer, sorted
+	# Remove remote branches that no longer exist on the remote repository
+	prune-origin = remote prune origin
+
+	# Show number of commits per contributer, sorted
 	count = shortlog -sn
 	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f"
 [branch]
-
 	# Show most recently changed branches first.
 	sort = -committerdate
-
 [color "branch"]
-
 	current = yellow reverse
 	local = yellow
 	remote = green
-  
 [color "diff"]
-
 	meta = yellow bold
 	frag = magenta bold # line info
 	old = red # deletions
 	new = green # additions
-
 [color "status"]
-
 	added = green bold
 	changed = yellow bold
 	untracked = red
-
 [init]
 	defaultBranch = main
 [url "git@github.com:"]
