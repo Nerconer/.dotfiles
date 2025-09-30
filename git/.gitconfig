@@ -72,3 +72,5 @@
 	editor = code --wait
 [pull]
 	rebase = true
+[push]
+    default = current
