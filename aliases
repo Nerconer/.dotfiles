@@ -19,6 +19,9 @@ alias grep='grep --color=auto'
 alias df='df -h' # disk free, in Gigabytes, not bytes
 alias du='du -h -c' # calculate disk usage for a folder
 
+# fnm (Fast Node Manager) alias
+alias nvm="fnm"
+
 mov2mp4() {
   ffmpeg -i "$1" "${1%.*}.mp4"
 }

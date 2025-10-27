@@ -1,2 +1,4 @@
 Brewfile.lock.json
 nvim/plugged
+
+.DS_Store
