@@ -4,7 +4,7 @@ source "$DOTFILES/aliases"
 # fzf keybindings and completion (Ctrl+R history, Ctrl+T files).
 # Only in interactive shells with a line editor; `fzf --zsh` needs
 # fzf >= 0.48, fall back to ~/.fzf.zsh for older setups
-if [[ -o zle ]]; then
+if [[ -o zle && -t 0 ]]; then
   if command -v fzf >/dev/null 2>&1; then
     source <(fzf --zsh 2>/dev/null)
   elif [ -f ~/.fzf.zsh ]; then
