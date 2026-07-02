@@ -1,7 +1,5 @@
 export DOTFILES=~/.dotfiles
-for file in $DOTFILES/aliases; do
-  source "$file";
-done;
+source "$DOTFILES/aliases"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 

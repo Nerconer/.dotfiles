@@ -1,63 +1,49 @@
-source ./lib/utils
-
-function usage() {
-cat <<EOT
-	dotfiles - David Solà
-	Usage: $(basename "$0") [options]
-	Options:
-			-h, --help	Print this help text
-			backup     	Generates a Backup file
-			link   			Configures all symlinks
-			git       	Configures Git
-			homebrew    Install dependencies
-			shell       Configures Shell
-			all       	Full setup and configuration
-	Documentation can be found at https://github.com/Nerconer/dotfiles
-	Copyright (c) David Solà
-	Licensed under the MIT license.
-EOT
-}
-
 function setup_backup() {
 	BACKUP_DIR=$HOME/dotfiles-backup
 
 	title "Creating backup directory at $BACKUP_DIR"
-	
+
 	mkdir -p "$BACKUP_DIR"
 
-	for file in "$HOME/.config/nvim" "$HOME/.vim" "$HOME/.vimrc"; do
-	    if [ ! -L "$file" ]; then
-            echo "Backing up $file"
-            cp -rf "$file" "$BACKUP_DIR"
-        else
-            warning "$file does not exist at this location or is a symlink"
-        fi
-    done
+	for file in "$HOME/.config/nvim" "$HOME/.vim" "$HOME/.vimrc" "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.gitconfig" "$HOME/.tmux.conf"; do
+		if [ -e "$file" ] && [ ! -L "$file" ]; then
+			echo "Backing up $file"
+			cp -rf "$file" "$BACKUP_DIR"
+		else
+			warning "$file does not exist at this location or is a symlink"
+		fi
+	done
 }
 
 function setup_symlinks() {
 	title "Setting up symbolic links"
 
-	for folder in "${LINKS[@]}"; do
-		stow -D "$folder"
-		stow "$folder"
+	if ! command_exists 'stow'; then
+		error "stow is not installed. Run './install homebrew' first"
+	fi
+
+	# Move real files out of the way so stow doesn't abort on conflicts;
+	# symlinks are left alone (stow --restow refreshes them)
+	for target in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.zsh_profile" "$HOME/.gitconfig" "$HOME/.nanorc" "$HOME/.tmux.conf"; do
+		if [ -e "$target" ] && [ ! -L "$target" ]; then
+			warning "Moving existing $target to $target.backup"
+			mv "$target" "$target.backup"
+		fi
 	done
 
-		if [ -e "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
-			echo "vim-plug already exists... Skipping"
+	for folder in "${LINKS[@]}"; do
+		stow --restow "$folder"
+	done
+
+	if [ -e "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
+		echo "vim-plug already exists... Skipping"
 	else
-			echo "Installing vim-plug"
-			curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		echo "Installing vim-plug"
+		curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+			https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 		echo "Installing nvim plugins..."
 		nvim --headless +PlugInstall +qall
 	fi
-
-	# ZSH plugin installation
-	[ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ] && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-	[ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-z ] && git clone https://github.com/agkozak/zsh-z ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-z
-
-	echo "si"
 }
 
 function setup_git() {
@@ -66,41 +52,62 @@ function setup_git() {
 	defaultName=$(git config user.name)
 	defaultEmail=$(git config user.email)
 
-  	read -rp "Name [$defaultName] " name
-  	read -rp "Email [$defaultEmail] " email
+	read -rp "Name [$defaultName] " name
+	read -rp "Email [$defaultEmail] " email
 
-	git config -f ~/.gitconfig-local user.name "${name:-$defaultName}"
-  	git config -f ~/.gitconfig-local user.email "${email:-$defaultEmail}"
+	# ~/.gitconfig.local is included from git/.gitconfig and kept out of version control
+	git config -f ~/.gitconfig.local user.name "${name:-$defaultName}"
+	git config -f ~/.gitconfig.local user.email "${email:-$defaultEmail}"
 }
 
 function setup_homebrew() {
 	title "Setting up Homebrew"
-	
-	if test ! "$(command -v brew)"; then
-		echo "Homebrew not installed. Installing..."
-		# Run as a login shell (non-interactive) so that the script doesn't pause for user input
-		NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-		echo '# Set PATH, MANPATH, etc., for Homebrew.' >> /home/$USER/.zprofile
-		echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/$USER/.zprofile
-		eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  	fi
+	if ! command_exists 'brew'; then
+		echo "Homebrew not installed. Installing..."
+		# Run non-interactively so that the script doesn't pause for user input
+		NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	fi
+
+	# Make brew available in this script no matter the platform prefix;
+	# interactive shells get this from zsh/.zprofile
+	for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+		if [ -x "$brew_path" ]; then
+			eval "$("$brew_path" shellenv)"
+			break
+		fi
+	done
 
 	# install brew dependencies from Brewfile
-  	brew bundle
+	brew bundle
 }
 
 function setup_shell() {
-	title "Configurating Shell"
+	title "Configuring Shell"
 
-	echo "Installing Oh My Zsh..."
-	if [ -n "$ZSH" ]; then
-		echo "Oh My Zsh already exists, skipping..."
+	if [ -d "$HOME/.oh-my-zsh" ]; then
+		echo "Oh My Zsh already installed, skipping..."
 	else
-		mkdir oh-my-zsh-temp && cd "$_"
-		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+		echo "Installing Oh My Zsh..."
+		# --unattended: don't switch shells or start zsh mid-script
+		# --keep-zshrc: never replace the stowed .zshrc symlink
+		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 	fi
 
-	# Add zsh shell
-	command -v zsh | sudo tee -a /etc/shells
+	# External plugins referenced from .zshrc (not bundled with Oh My Zsh)
+	zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+	if [ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ]; then
+		git clone https://github.com/zsh-users/zsh-autosuggestions "$zsh_custom/plugins/zsh-autosuggestions"
+	fi
+	if [ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ]; then
+		git clone https://github.com/zsh-users/zsh-syntax-highlighting "$zsh_custom/plugins/zsh-syntax-highlighting"
+	fi
+
+	# Register zsh as a valid login shell and make it the default
+	if ! grep -q "$(command -v zsh)" /etc/shells; then
+		command -v zsh | sudo tee -a /etc/shells
+	fi
+	if [ "$(basename "$SHELL")" != "zsh" ]; then
+		chsh -s "$(command -v zsh)"
+	fi
 }

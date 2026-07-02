@@ -7,20 +7,21 @@ set -e
 
 CURRENT_PATH="$(pwd)"
 
-
 for f in */; do # Match only directories
     # $f is a directory
-    printf "\n\n\n***** Updating '$f' *****\n"
+    printf "\n\n\n***** Updating '%s' *****\n" "$f"
 
-    cd $f
+    cd "$f"
 
-    printf "\n  1. Fetching latest Repository version..."
+    printf "\n  1. Fetching latest repository version..."
+    git fetch --all --prune
 
-    git fetch --all
-    git checkout master
-    git pull origin master
+    # Detect the default branch (main, master, ...) instead of hardcoding it
+    branch="$(git remote show origin | sed -n 's/.*HEAD branch: //p')"
+    git checkout "$branch"
+    git pull origin "$branch"
 
     printf "\n  2. Updated successfully"
 
-	cd $CURRENT_PATH
+    cd "$CURRENT_PATH"
 done

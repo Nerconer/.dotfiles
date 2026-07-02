@@ -1,6 +1,7 @@
 if OS.mac?
   # Applications
   cask "postman"
+  cask "visual-studio-code"
 elsif OS.linux?
   brew "xclip"
 end
@@ -11,17 +12,12 @@ brew "htop"
 brew "jq"
 brew "neovim"
 brew "markdown"
-brew "python"
 brew "tmux"
-brew "vim"
 brew "tree"
 brew "wget"
-brew "z"
 brew "zsh"
 brew "nmap"
-cask "visual-studio-code"
 brew "dos2unix"
-brew "nvim"
 brew "ncdu"
 brew "stow"
 brew "fzf"
@@ -30,4 +26,10 @@ brew "bat"
 brew "btop"
 brew "uv"
 brew "pnpm"
+brew "ffmpeg"
+
+# Version managers (see zsh/.zshrc)
 brew "fnm"
+brew "mise"
+brew "pyenv"
+brew "pyenv-virtualenv"

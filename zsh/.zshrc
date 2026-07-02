@@ -3,10 +3,9 @@ DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 DISABLE_COMPFIX="true"
 
-# Include ~/bin scripts in PATH
-export PATH=$HOME/bin:$PATH
-# Include Homebrew in PATH
-export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+# Include ~/bin and ~/.local/bin scripts in PATH
+# (Homebrew's PATH is set in ~/.zprofile, arch-aware)
+export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 export TERM=xterm-256color
 
@@ -29,17 +28,17 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # Add color and formatting to man pages and less command
 export MANROFFOPT='-c'
 export LESS='-R'
-if command -v tput >/dev/null 2>&1; then
-  export LESS_TERMCAP_mb="$(tput bold; tput setaf 2)"
-  export LESS_TERMCAP_md="$(tput bold; tput setaf 6)"
-  export LESS_TERMCAP_me="$(tput sgr0)"
-  export LESS_TERMCAP_so="$(tput bold; tput setaf 3; tput setab 4)"
-  export LESS_TERMCAP_se="$(tput rmso; tput sgr0)"
-  export LESS_TERMCAP_us="$(tput smul; tput bold; tput setaf 7)"
-  export LESS_TERMCAP_ue="$(tput rmul; tput sgr0)"
-  export LESS_TERMCAP_mr="$(tput rev)"
-  export LESS_TERMCAP_mh="$(tput dim)"
-fi
+# Literal ANSI escapes (equivalent to the former tput calls, but with no
+# subprocess cost at startup)
+export LESS_TERMCAP_mb=$'\e[1m\e[32m'
+export LESS_TERMCAP_md=$'\e[1m\e[36m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[1m\e[33m\e[44m'
+export LESS_TERMCAP_se=$'\e[27m\e[0m'
+export LESS_TERMCAP_us=$'\e[4m\e[1m\e[37m'
+export LESS_TERMCAP_ue=$'\e[24m\e[0m'
+export LESS_TERMCAP_mr=$'\e[7m'
+export LESS_TERMCAP_mh=$'\e[2m'
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -68,20 +67,6 @@ source $ZSH/oh-my-zsh.sh
 
 source ~/.zsh_profile
 
-# Conda portable & light setup
-export CONDA_AUTO_ACTIVATE_BASE=false
-
-if command -v conda >/dev/null 2>&1; then
-  eval "$(conda shell.zsh hook)"
-else
-  # Fallback si aún no está en PATH
-  if [[ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]]; then
-    . "$HOME/anaconda3/etc/profile.d/conda.sh"
-  elif [[ -d "$HOME/anaconda3/bin" ]]; then
-    export PATH="$HOME/anaconda3/bin:$PATH"
-  fi
-fi
-
 # session-wise fix
 ulimit -n 4096
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
@@ -89,3 +74,20 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 # fnm is a Node.js version manager written in Rust
 command -v fnm >/dev/null 2>&1 && eval "$(fnm env --use-on-cd --shell zsh)"
 
+# opencode
+export PATH=$HOME/.opencode/bin:$PATH
+
+# mise (dev tools version manager)
+command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
+
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
+# Lazy-load pyenv: full init (incl. auto-activation of virtualenvs on cd)
+# only runs the first time `pyenv` is invoked in a session.
+pyenv() {
+  unfunction pyenv
+  eval "$(command pyenv init - zsh)"
+  eval "$(command pyenv virtualenv-init - zsh)"
+  pyenv "$@"
+}

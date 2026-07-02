@@ -6,10 +6,10 @@ PERSONAL=~/personal
 BIN=~/bin
 
 DOTFILES_DIRECTORY="${HOME}/.dotfiles"
-DOTFILES_TARBALL_PATH="https://github.com/Nerconer/dotfiles/tarball/master"
-DOTFILES_GIT_REMOTE="git@github.com:Nerconer/dotfiles.git"
+DOTFILES_TARBALL_PATH="https://github.com/Nerconer/.dotfiles/tarball/main"
+DOTFILES_GIT_REMOTE="git@github.com:Nerconer/.dotfiles.git"
 
-declare -a LINKS="("git" "nano" "nvim" "tmux" "scripts" "zsh")"
+LINKS=(git nano nvim tmux scripts zsh)
 
 echo ""
 
@@ -27,15 +27,16 @@ fi
 
 cd "${DOTFILES_DIRECTORY}"
 
-source ./lib/*
+source ./lib/utils
+source ./lib/setup
 
 if ! command_exists 'brew'; then
 	setup_homebrew
 fi
 
 if ! command_exists 'git'; then
-	echo "Updating Homebrew..."	
-  brew update
+	echo "Updating Homebrew..."
+	brew update
 	echo "Installing Git..."
 	brew install git
 fi
@@ -45,7 +46,7 @@ if ! is_git_repo; then
 	echo "Initializing git repository..."
 	git init
 	git remote add origin ${DOTFILES_GIT_REMOTE}
-	git fetch origin master
+	git fetch origin main
 	# Reset the index and working tree to the fetched HEAD
 	# (submodules are cloned in the subsequent sync step)
 	git reset --hard FETCH_HEAD
@@ -55,7 +56,7 @@ fi
 
 echo -e "Syncing dotfiles..."
 # Pull latest changes
-git pull --rebase origin master
+git pull --rebase origin main
 
 function usage() {
 cat <<EOT
@@ -69,7 +70,7 @@ cat <<EOT
 			homebrew    Install dependencies
 			shell       Configures Shell
 			all       	Full setup and configuration
-	Documentation can be found at https://github.com/Nerconer/dotfiles
+	Documentation can be found at https://github.com/Nerconer/.dotfiles
 	Copyright (c) David Solà
 	Licensed under the MIT license.
 EOT
@@ -100,10 +101,16 @@ case "$1" in
 	shell)
 		setup_shell
 		;;
-	all|*)
+	""|all)
+		# Homebrew first: symlinks need stow, shell needs zsh/git
+		setup_homebrew
 		setup_symlinks
 		setup_shell
-		setup_homebrew
+		setup_git
+		;;
+	*)
+		usage
+		exit 1
 		;;
 esac
 
