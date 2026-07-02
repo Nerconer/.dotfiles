@@ -5,11 +5,15 @@ alias ....='cd ../../..'
 
 # Utilities
 alias h="history"
-alias ip="curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g'"
+alias ip="curl https://ipinfo.io/ip"
 alias g="git"
 alias n="nano"
 alias top="btop"
 alias ports="lsof -i -P | grep -i 'listen'"
+alias ll="ls -lah"
+alias cat="bat -P --theme zenburn"
+alias reload=". ~/.zshrc"
+alias cc="claude"
 
 # use nvim, but don't make me think about it
 [[ -n "$(command -v nvim)" ]] && alias vim="nvim"
@@ -28,4 +32,9 @@ mov2mp4() {
 
 mov2gif() {
   ffmpeg -i "$1" -vf "fps=20,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 "${1%.*}.gif"
+}
+
+# example: up 3  --> goes up 3 directories
+up() { 
+  cd $(eval printf '../'%.0s {1..$1})
 }
