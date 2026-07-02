@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install zsh and shellcheck
+        run: sudo apt-get update -q && sudo apt-get install -y -q zsh shellcheck
+
+      - name: Bash syntax check
+        run: |
+          bash -n install
+          bash -n lib/setup
+          bash -n lib/utils
+          bash -n scripts/bin/dotfiles
+          bash -n scripts/bin/update-repos
+          bash -n macos/defaults
+
+      - name: Zsh syntax check
+        run: |
+          zsh -n zsh/.zshrc
+          zsh -n zsh/.zprofile
+          zsh -n zsh/.zsh_profile
+          zsh -n aliases
+
+      - name: Shellcheck
+        run: |
+          shellcheck --severity=error install scripts/bin/dotfiles scripts/bin/update-repos macos/defaults
+          shellcheck --severity=error --shell=bash lib/setup lib/utils

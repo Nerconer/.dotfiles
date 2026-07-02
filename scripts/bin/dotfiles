@@ -3,6 +3,4 @@
 # Exit on fail
 set -e
 
-echo $@
-
-bash "${HOME}/.dotfiles/install" $@
+bash "${HOME}/.dotfiles/install" "$@"
