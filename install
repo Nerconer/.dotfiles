@@ -9,7 +9,7 @@ DOTFILES_DIRECTORY="${HOME}/.dotfiles"
 DOTFILES_TARBALL_PATH="https://github.com/Nerconer/.dotfiles/tarball/main"
 DOTFILES_GIT_REMOTE="git@github.com:Nerconer/.dotfiles.git"
 
-LINKS=(git nano nvim tmux scripts zsh)
+LINKS=(git nano nvim ssh tmux scripts zsh)
 
 echo ""
 
@@ -55,8 +55,12 @@ if ! is_git_repo; then
 fi
 
 echo -e "Syncing dotfiles..."
-# Pull latest changes
-git pull --rebase origin main
+# Pull latest changes, unless there is local work in progress
+if [ -z "$(git status --porcelain)" ]; then
+	git pull --rebase origin main
+else
+	warning "Working tree has local changes, skipping sync"
+fi
 
 function usage() {
 cat <<EOT
@@ -69,6 +73,8 @@ cat <<EOT
 			git       	Configures Git
 			homebrew    Install dependencies
 			shell       Configures Shell
+			vscode      Configures VS Code (settings + extensions)
+			macos       Applies macOS defaults (opt-in, not part of 'all')
 			all       	Full setup and configuration
 	Documentation can be found at https://github.com/Nerconer/.dotfiles
 	Copyright (c) David Solà
@@ -101,12 +107,20 @@ case "$1" in
 	shell)
 		setup_shell
 		;;
+	vscode)
+		setup_vscode
+		;;
+	macos)
+		setup_macos
+		;;
 	""|all)
-		# Homebrew first: symlinks need stow, shell needs zsh/git
+		# Homebrew first: symlinks need stow, shell needs zsh/git.
+		# macOS defaults are opt-in: run './install macos' explicitly.
 		setup_homebrew
 		setup_symlinks
 		setup_shell
 		setup_git
+		setup_vscode
 		;;
 	*)
 		usage

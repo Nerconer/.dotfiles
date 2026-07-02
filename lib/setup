@@ -22,9 +22,13 @@ function setup_symlinks() {
 		error "stow is not installed. Run './install homebrew' first"
 	fi
 
+	# Pre-create ~/.ssh so stow links only the config file, never the
+	# whole directory (private keys must stay outside the repo)
+	mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
+
 	# Move real files out of the way so stow doesn't abort on conflicts;
 	# symlinks are left alone (stow --restow refreshes them)
-	for target in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.zsh_profile" "$HOME/.gitconfig" "$HOME/.nanorc" "$HOME/.tmux.conf"; do
+	for target in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.zsh_profile" "$HOME/.gitconfig" "$HOME/.gitignore_global" "$HOME/.nanorc" "$HOME/.tmux.conf" "$HOME/.ssh/config"; do
 		if [ -e "$target" ] && [ ! -L "$target" ]; then
 			warning "Moving existing $target to $target.backup"
 			mv "$target" "$target.backup"
@@ -110,4 +114,50 @@ function setup_shell() {
 	if [ "$(basename "$SHELL")" != "zsh" ]; then
 		chsh -s "$(command -v zsh)"
 	fi
+}
+
+function setup_vscode() {
+	title "Setting up VS Code"
+
+	if ! command_exists 'code'; then
+		warning "VS Code CLI not found, skipping (install it via brew bundle first)"
+		return 0
+	fi
+
+	if [ "$(uname)" = "Darwin" ]; then
+		vscode_user="$HOME/Library/Application Support/Code/User"
+	else
+		vscode_user="$HOME/.config/Code/User"
+	fi
+	mkdir -p "$vscode_user"
+
+	# Seed settings/keybindings only when missing: the repo keeps a sanitized
+	# baseline, the live files may grow machine-specific entries afterwards
+	for file in settings.json keybindings.json; do
+		if [ -e "$vscode_user/$file" ]; then
+			echo "$file already exists... Skipping"
+		else
+			echo "Copying $file"
+			cp "vscode/$file" "$vscode_user/$file"
+		fi
+	done
+
+	echo "Installing missing extensions..."
+	installed=$(code --list-extensions)
+	while IFS= read -r extension; do
+		if ! echo "$installed" | grep -qix "$extension"; then
+			code --install-extension "$extension"
+		fi
+	done < vscode/extensions.txt
+}
+
+function setup_macos() {
+	title "Setting up macOS defaults"
+
+	if [ "$(uname)" != "Darwin" ]; then
+		warning "Not macOS, skipping"
+		return 0
+	fi
+
+	./macos/defaults
 }

@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#
+# Sensible macOS defaults. Run explicitly with `./install macos` —
+# it is NOT part of the full setup because it changes system behavior.
+# Review each line and comment out what you don't want.
+
+set -e
+
+echo "Applying macOS defaults..."
+
+# --- Keyboard ---------------------------------------------------------------
+# Faster key repeat (lower is faster; defaults are 2/15... stock is 6/25)
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+# Key repeat on hold instead of the accent-picker popup
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+
+# --- Finder -----------------------------------------------------------------
+# Show all filename extensions
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+# Show hidden files
+defaults write com.apple.finder AppleShowAllFiles -bool true
+# Show path bar and status bar
+defaults write com.apple.finder ShowPathbar -bool true
+defaults write com.apple.finder ShowStatusBar -bool true
+# List view by default
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+# Don't warn when changing a file extension
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+# Avoid creating .DS_Store on network and USB volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+# --- Dock -------------------------------------------------------------------
+# Don't rearrange Spaces based on most recent use
+defaults write com.apple.dock mru-spaces -bool false
+
+# --- Screenshots ------------------------------------------------------------
+# Save screenshots to ~/Pictures/screenshots instead of the Desktop
+mkdir -p "$HOME/Pictures/screenshots"
+defaults write com.apple.screencapture location -string "$HOME/Pictures/screenshots"
+
+# --- Apply ------------------------------------------------------------------
+killall Finder Dock SystemUIServer 2>/dev/null || true
+
+echo "Done. Some changes need a logout/login to take effect."

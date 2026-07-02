@@ -2,6 +2,8 @@ if OS.mac?
   # Applications
   cask "postman"
   cask "visual-studio-code"
+  # Fonts
+  cask "font-jetbrains-mono"
 elsif OS.linux?
   brew "xclip"
 end

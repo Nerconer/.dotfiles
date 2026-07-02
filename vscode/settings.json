@@ -1,0 +1,77 @@
+{
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "editor.cursorBlinking": "smooth",
+    "editor.linkedEditing": true,
+    "editor.guides.bracketPairs": true,
+    "breadcrumbs.enabled": false,
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.inlineSuggest.enabled": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.fontFamily": "'Fira Code'",
+    "editor.fontSize": 14,
+    "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss06'",
+    "prettier.tabWidth": 4,
+    "workbench.colorTheme": "One Monokai",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.tree.indent": 15,
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.editor.labelFormat": "short",
+    "workbench.settings.applyToAllProfiles": ["editor.fontFamily"],
+    "workbench.colorCustomizations": {
+        "tree.indentGuidesStroke": "#05ef3c"
+    },
+    "notebook.output.textLineLimit": 1000,
+    "notebook.output.wordWrap": true,
+    "notebook.lineNumbers": "on",
+    "diffEditor.renderSideBySide": true,
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.inheritEnv": true,
+    "terminal.integrated.fontFamily": "'Monaspace Argon', Menlo, Monaco, 'Courier New', monospace",
+    "terminal.integrated.profiles.osx": {
+        "rosetta": {
+            "path": "arch",
+            "args": ["-x86_64", "zsh", "-l"],
+            "overrideName": true
+        },
+        "zsh": {
+            "path": "zsh",
+            "args": []
+        }
+    },
+    "python.analysis.typeCheckingMode": "strict",
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[dockercompose]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        },
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "template-string-converter.validLanguages": [
+        "svelte",
+        "typescript",
+        "javascript",
+        "typescriptreact",
+        "javascriptreact"
+    ],
+    "template-string-converter.autoRemoveTemplateString": true,
+    "template-string-converter.addBracketsToProps": true,
+    "tailwind-fold.autoFold": false,
+    "markdown-preview-enhanced.revealjsTheme": "night.css",
+    "markdown-preview-enhanced.previewTheme": "github-dark.css",
+    "mssql.objectExplorer.groupBySchema": false
+}

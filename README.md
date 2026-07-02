@@ -23,8 +23,15 @@ The full setup (`./install` or `./install all`) does, in order:
 2. **link** — symlinks all configs into `$HOME` with stow (existing real files are moved to `*.backup`)
 3. **shell** — installs oh-my-zsh + external plugins and sets zsh as the default shell
 4. **git** — asks for your name/email and writes them to `~/.gitconfig.local`
+5. **vscode** — seeds VS Code settings/keybindings (only if missing) and installs the extensions in `vscode/extensions.txt`
 
-Each step can be run on its own: `./install homebrew|link|shell|git|backup`.
+Each step can be run on its own: `./install homebrew|link|shell|git|vscode|backup`.
+
+There is also an opt-in step, excluded from `all` because it changes system behavior:
+
+```bash
+./install macos   # sensible macOS defaults (Finder, keyboard, Dock) — review macos/defaults first
+```
 
 When it finishes, restart your terminal (or `exec zsh -l`).
 
